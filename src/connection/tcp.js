@@ -1,8 +1,6 @@
 const net = require('net');
 
-let tcp = {};
-
-tcp.connect = function (endpoint) {
+function connect(endpoint) {
     let host = parseInt(endpoint[1]);
     let port = parseInt(endpoint[2]);
     return connectAsync(port, host);
@@ -22,3 +20,5 @@ function connectAsync(port, host) {
         c.on('connect', onConnect);
     });
 }
+
+module.exports = { connect };
