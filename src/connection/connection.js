@@ -1,29 +1,30 @@
-const util = require('util');
 const EventEmitter = require('events');
 let connection = {};
 let protocols = {};
 
-function Connection(stream) {
-    if (!(this instanceof Connection)) return CConnection.apply({
-        __proto__: Connection.prototype
-    }, arguments);
-    EventEmitter.apply(this);
+/*
+class Connection extends EventEmitter {
+    constructor(endpoint) {
+        super();
+    }
 }
-util.inherits(Connection, EventEmitter);
+*/
 
 /**
  * Connect to the endpoint
  * @param {string|array} endpoint - the descriptor of the endpoint
- * @return {Promise.<Connection>}
+ * @return {Promise.<Stream>}
  */
-connection.connect = function (endpoint) {
+function connect(endpoint) {
     if (typeof endpoint === 'string') {
         endpoint = endpoint.split(':');
     }
     if (typeof protocols[endpoint[0]] === 'undefined') {
         throw new Error('unsupported protocol');
     }
-    return protocols[endpoint[0]].connect(endpoint).then(Connection);
+    return protocols[endpoint[0]].connect(endpoint);
 };
 
 protocols.tcp = require('./tcp.js');
+
+module.exports = { /*Connection,*/ connect };

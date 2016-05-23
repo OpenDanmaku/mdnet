@@ -5,6 +5,10 @@ let tcp = {};
 tcp.connect = function (endpoint) {
     let host = parseInt(endpoint[1]);
     let port = parseInt(endpoint[2]);
+    return connectAsync(port, host);
+};
+
+function connectAsync(port, host) {
     return new Promise((resolve, reject) => {
         let c = net.connect(port, host);
         function onError(err) {
@@ -17,4 +21,4 @@ tcp.connect = function (endpoint) {
         c.on('error', onError);
         c.on('connect', onConnect);
     });
-};
+}
