@@ -42,4 +42,16 @@ function connect(endpoint) {
     return protocols[splittedEndpoint[0]].connect(splittedEndpoint);
 }
 
+/**
+ * Listen on endpoint
+ * @param {string} endpoint
+ */
+function listen(endpoint) {
+    let splittedEndpoint = splitEndpoint(endpoint);
+    if (protocols[splittedEndpoint[0]] === undefined) {
+        throw new Error('unsupported protocol');
+    }
+    return protocols[splittedEndpoint[0]].listen(splittedEndpoint);
+}
+
 module.exports = { connect, splitEndpoint };
