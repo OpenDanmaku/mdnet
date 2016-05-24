@@ -7,8 +7,8 @@ module.exports = {
     /** @namespace */
     key: {
         /** @type {Buffer} */
-        public: null,
+        public: Buffer('MYw1ZMeRroG9Zwlkxh/DRwvO754M3hVJbduwgZbuXZI=', 'base64'),
         /** @type {Buffer} */
-        private: null
+        private: Buffer('sFQNPNInIVsSI9Db3yKFJ0bVwrBMRnJC/g8moZujDXvw+FE6TxFBUPSYYjke+cPCLn9Jzyf4UAKjzcbQKjIxWw==', 'base64')
     }
 };

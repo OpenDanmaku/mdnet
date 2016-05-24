@@ -12,7 +12,7 @@ const Connection = require('./connection-class.js');
  * @return {Promise.<Connection>}
  */
 function connect(splittedEndpoint) {
-    let host = parseInt(splittedEndpoint[1]);
+    let host = splittedEndpoint[1];
     let port = parseInt(splittedEndpoint[2]);
     let stream = net.connect(port, host);
     return new Promise((resolve, reject) => {
@@ -27,6 +27,21 @@ function connect(splittedEndpoint) {
             });
         });
     });
-};
+}
 
-module.exports = { connect };
+/**
+ * Listen on TCP endpoint
+ * @param {Array} splittedEndpoint - the descriptor of the endpoint
+ * @param {ConnectionCallback} callback
+ * @return {Promise}
+ */
+function listen(splittedEndpoint, callback) {
+    let server = net.createServer((c) => {
+        callback(new Connection(c));
+    });
+    let host = splittedEndpoint[1];
+    let port = parseInt(splittedEndpoint[2]);
+    server.listen(port, host);
+}
+
+module.exports = { connect, listen };

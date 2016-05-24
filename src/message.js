@@ -41,4 +41,7 @@ module.exports = class Message {
         message[_private] = { type: messageObject.type };
         return message;
     }
+    get type() {
+        return this[_private].type;
+    }
 }

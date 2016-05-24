@@ -39,7 +39,7 @@ function connect(endpoint) {
     if (protocols[splittedEndpoint[0]] === undefined) {
         throw new Error('unsupported protocol');
     }
-    return protocols[splittedEndpoint[0]].connect(splittedEndpoint);
+    return protocols[splittedEndpoint[0]].connect(splittedEndpoint).then(onConnection);
 }
 
 /**
@@ -51,7 +51,25 @@ function listen(endpoint) {
     if (protocols[splittedEndpoint[0]] === undefined) {
         throw new Error('unsupported protocol');
     }
-    return protocols[splittedEndpoint[0]].listen(splittedEndpoint);
+    return protocols[splittedEndpoint[0]].listen(splittedEndpoint, onConnection);
 }
 
-module.exports = { connect, splitEndpoint };
+let dataListener = null;
+function setDataListener(cb) {
+    dataListener = cb;
+}
+/**
+ * Connection callback
+ * @type {ConnectionCallback}
+ * @param {Connection} conn
+ * @return {Connection}
+ */
+function onConnection(conn) {
+    conn.on('data', buf => {
+        dataListener(buf, conn);
+    });
+    conn.on('error', err => console.error(err.stack));
+    return conn;
+}
+
+module.exports = { connect, splitEndpoint, setDataListener, listen };
