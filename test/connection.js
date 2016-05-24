@@ -1,11 +1,10 @@
-const connection = require('../src/connection/connection.js');
+const internal = require('../src/connection/connection-internal.js');
 const should = require('chai').should();
 
 describe('connection', function () {
-    describe('.Connection', function () {
-        describe('#constructor', function () {
-            let conn = new connection.Connection('tcp:127.0.0.1:1234');
-            conn.endpoint.should.equal('tcp:127.0.0.1:1234');
+    describe('internal', function () {
+        describe('.connect', function () {
+            let conn = internal.connect('tcp:127.0.0.1:1234');
         })
     })
 })
