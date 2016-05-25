@@ -6,7 +6,7 @@ let minLevel = 0;
 
 function log(level, tag, ...args) {
     if (level < minLevel) return;
-    console.log(colors[levelColors[level]](`[${levelNames[level]}]`), tag + ':', ...args);
+    console.log(colors[levelColors[level]](colors.bold(`[${levelNames[level]}]`)), colors.underline(`<${tag}>`), ...args);
 }
 
 /** @module log */

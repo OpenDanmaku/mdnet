@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const env = require('../environment.js');
 const ed25519 = require('../ed25519.js');
+const log = require('../log.js');
 /**
  * Connection wrapper class
  * @class
@@ -53,6 +54,7 @@ class Connection extends EventEmitter {
                     this._private.stream.end();
                     return;
                 }
+                log.debug('connection', `get message from ${this.remoteId} (${this.endpoint})`);
                 this.emit('data', data, signature);
                 buf = buf.slice(2 + ed25519.signSize + dataLen);
             }
@@ -60,6 +62,8 @@ class Connection extends EventEmitter {
         });
         let handshakeBuf = Buffer.concat([new Buffer('MD\x01'), env.key.public]);
         this._private.stream.write(handshakeBuf);
+
+        this.on('handshake', () => log.info('connection', `new connection: ${this.remoteId} (${this.endpoint})`));
     }
     /**
      * Send message to the peer
@@ -67,6 +71,7 @@ class Connection extends EventEmitter {
      * @return
      */
     send(message) {
+        log.debug('connection', `send message to ${this.remoteId} (${this.endpoint})`);
         let signature = ed25519.sign(message, env.key.public, env.key.private);
         let buf = new Buffer(2 + ed25519.signSize + message.length);
         buf.writeUInt16BE(message.length, 0);

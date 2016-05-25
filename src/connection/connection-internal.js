@@ -1,4 +1,5 @@
 const PROTO_ID = require('./id.js');
+const log = require('../log.js');
 /**
  * Split endpoint string
  * @param {string} endpoint string representation of endpoint
@@ -36,6 +37,7 @@ const protocols = {
  * @return {Promise.<Connection>}
  */
 function connect(endpoint) {
+    log.info('connection', `connect to: ${endpoint}`);
     let splittedEndpoint = splitEndpoint(endpoint);
     if (protocols[splittedEndpoint[0]] === undefined) {
         throw new Error(`unsupported protocol '${splittedEndpoint[0]}'`);
@@ -48,6 +50,7 @@ function connect(endpoint) {
  * @param {string} endpoint
  */
 function listen(endpoint) {
+    log.info('connection', `listen on: ${endpoint}`);
     let splittedEndpoint = splitEndpoint(endpoint);
     if (protocols[splittedEndpoint[0]] === undefined) {
         throw new Error(`unsupported protocol '${splittedEndpoint[0]}'`);
