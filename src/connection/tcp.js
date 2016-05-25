@@ -43,7 +43,15 @@ function listen(splittedEndpoint, callback) {
         let host = c.remoteHost;
         let port = c.remotePort;
         let endpoint = net.isIPv6(host) ? `tcp:[${host}]:${port}` : `tcp:${host}:${port}`;
-        callback(new Connection(c, endpoint));
+        let conn = new Connection(c, endpoint);
+        function handleError() {
+            conn.close();
+        }
+        conn.once('error', handleError);
+        conn.once('handshake', () => {
+            conn.removeListener('error', handleError);
+            callback(conn);
+        });
     });
     let host = splittedEndpoint[1];
     let port = parseInt(splittedEndpoint[2]);

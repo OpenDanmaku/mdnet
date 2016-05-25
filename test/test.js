@@ -25,13 +25,23 @@ describe('mdnet', function () {
             })
         })
     })
-
     describe('RPC', function () {
-        describe('register', function () {
+        before(function () {
             RPC.ping = () => 'ping';
+            RPC.add = (a, b) => a + b;
+            RPC.wait = time => new Promise(resolve => setTimeout(resolve, time));
         })
-        describe('call', function () {
+        it('call', function () {
             return RPC('tcp:127.0.0.1:2333').ping().should.eventually.equal('ping');
+        })
+        it('call2', function () {
+            return RPC('tcp:127.0.0.1:2333').add(1, 2).should.eventually.equal(3);
+        })
+        it('call3', function () {
+            return RPC('tcp:127.0.0.1:2333').add('a', 'b').should.eventually.equal('ab');
+        })
+        it('call4', function () {
+            return RPC('tcp:127.0.0.1:2333').wait(500).should.eventually.equal(undefined);
         })
     })
 })

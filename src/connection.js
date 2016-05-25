@@ -13,7 +13,7 @@ const Message = require('./message.js');
 const send = co.wrap(function* (endpoint, message) {
     let conn = yield internal.connect(endpoint);
     conn.send(message.toBuffer());
-    conn.close();
+    //setImmediate(() => conn.close());
 });
 
 /**

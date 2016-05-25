@@ -1,3 +1,4 @@
+const PROTO_ID = require('./id.js');
 /**
  * Split endpoint string
  * @param {string} endpoint string representation of endpoint
@@ -26,7 +27,7 @@ function splitEndpoint(endpoint) {
 
 const protocols = {
     tcp: require('./tcp.js'),
-    // id: require('./id.js'),
+    id: require('./id.js'),
 }
 
 /**
@@ -70,6 +71,7 @@ function onConnection(conn) {
     });
     conn.on('error', err => console.error(err.stack));
     // todo: add connection to storage
+    PROTO_ID.onConnection(conn);
     return conn;
 }
 
