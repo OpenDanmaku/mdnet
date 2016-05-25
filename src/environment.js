@@ -11,5 +11,6 @@ module.exports = {
         /** @type {Buffer} */
         private: Buffer('sFQNPNInIVsSI9Db3yKFJ0bVwrBMRnJC/g8moZujDXvw+FE6TxFBUPSYYjke+cPCLn9Jzyf4UAKjzcbQKjIxWw==', 'base64')
     },
-    connTimeout: 30
+    connTimeout: 30,
+    rpcTimeout: 30
 };

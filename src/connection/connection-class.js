@@ -79,6 +79,9 @@ class Connection extends EventEmitter {
      * Close connection
      */
     close() {
+        if (this._private.timeoutHandler) {
+            clearTimeout(this._private.timeoutHandler);
+        }
         let stream = this._private.stream;
         stream.end();
         let destroyer = setTimeout(() => stream.destroy(), 2000);

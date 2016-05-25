@@ -37,12 +37,13 @@ function subscribe(type, callback) {
  * @callback MessageCallback
  * @param {Message} message
  * @param {ID} nodeId
+ * @param {string} endpoint
  */
 
 internal.setDataListener(function (buf, conn) {
     let message = Message.fromBuffer(buf);
-    messageEventCenter.emit("*", message, conn.remoteId);
-    messageEventCenter.emit(message.type, message, conn.remoteId);
+    messageEventCenter.emit("*", message, conn.remoteId, conn.endpoint);
+    messageEventCenter.emit(message.type, message, conn.remoteId, conn.endpoint);
 });
 
 module.exports = {

@@ -10,7 +10,7 @@ function splitEndpoint(endpoint) {
             let j = i + 1;
             while (j < endpoint.length && (endpoint[j] !== ':' || endpoint[j - 1] !== ']')) j++;
             if (endpoint[j - 1] !== ']') {
-                throw new TypeError('malformed endpoint');
+                throw new TypeError(`malformed endpoint '${endpoint}'`);
             }
             result.push(endpoint.slice(i + 1, j - 1));
             i = j;
@@ -37,7 +37,7 @@ const protocols = {
 function connect(endpoint) {
     let splittedEndpoint = splitEndpoint(endpoint);
     if (protocols[splittedEndpoint[0]] === undefined) {
-        throw new Error('unsupported protocol');
+        throw new Error(`unsupported protocol '${splittedEndpoint[0]}'`);
     }
     return protocols[splittedEndpoint[0]].connect(splittedEndpoint).then(onConnection);
 }
@@ -49,7 +49,7 @@ function connect(endpoint) {
 function listen(endpoint) {
     let splittedEndpoint = splitEndpoint(endpoint);
     if (protocols[splittedEndpoint[0]] === undefined) {
-        throw new Error('unsupported protocol');
+        throw new Error(`unsupported protocol '${splittedEndpoint[0]}'`);
     }
     return protocols[splittedEndpoint[0]].listen(splittedEndpoint, onConnection);
 }

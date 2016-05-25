@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/swordfeng/mdnet#readme",
   "devDependencies": {
-    "chai": "^3.5.0"
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0"
   },
   "dependencies": {
     "co": "^4.6.0",
