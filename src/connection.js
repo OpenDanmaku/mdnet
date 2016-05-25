@@ -41,6 +41,7 @@ function subscribe(type, callback) {
 
 internal.setDataListener(function (buf, conn) {
     let message = Message.fromBuffer(buf);
+    messageEventCenter.emit("*", message, conn.remoteId);
     messageEventCenter.emit(message.type, message, conn.remoteId);
 });
 

@@ -69,6 +69,7 @@ function onConnection(conn) {
         dataListener(buf, conn);
     });
     conn.on('error', err => console.error(err.stack));
+    // todo: add connection to storage
     return conn;
 }
 

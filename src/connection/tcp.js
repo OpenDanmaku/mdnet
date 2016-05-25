@@ -19,7 +19,10 @@ function connect(splittedEndpoint) {
         stream.once('error', reject);
         stream.once('connect', () => {
             stream.removeListener('error', reject);
-            let conn = new Connection(stream);
+            let host = stream.remoteHost;
+            let port = stream.remotePort;
+            let endpoint = net.isIPv6(host) ? `tcp:[${host}]:${port}` : `tcp:${host}:${port}`;
+            let conn = new Connection(stream, endpoint);
             conn.once('error', reject);
             conn.once('handshake', () => {
                 conn.removeListener('error', reject);
@@ -37,7 +40,10 @@ function connect(splittedEndpoint) {
  */
 function listen(splittedEndpoint, callback) {
     let server = net.createServer((c) => {
-        callback(new Connection(c));
+        let host = c.remoteHost;
+        let port = c.remotePort;
+        let endpoint = net.isIPv6(host) ? `tcp:[${host}]:${port}` : `tcp:${host}:${port}`;
+        callback(new Connection(c, endpoint));
     });
     let host = splittedEndpoint[1];
     let port = parseInt(splittedEndpoint[2]);

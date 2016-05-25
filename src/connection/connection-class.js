@@ -11,16 +11,18 @@ class Connection extends EventEmitter {
      * @param {string} endpoint - the descriptor of the endpoint
      * @param {stream.Duplex} stream - the internal stream object
      */
-    constructor(stream) {
+    constructor(stream, endpoint) {
         super();
         this._private = {};
-        //this._private.endpoint = endpoint;
+        this._private.endpoint = endpoint;
         this._private.stream = stream;
         this._private.recvBuf = new Buffer(0);
         this._private.handshaked = false;
+        this.update();
         stream.on('error', (err) => this.emit('error', err));
         stream.on('close', () => this.emit('close'));
         stream.on('data', (buf) => {
+            this.update();
             buf = Buffer.concat([this._private.recvBuf, buf]);
             if (!this._private.handshaked) {
                 if (buf.length < 3 + ed25519.keySize) {
@@ -71,12 +73,16 @@ class Connection extends EventEmitter {
         signature.copy(buf, 2);
         message.copy(buf, 2 + ed25519.signSize);
         this._private.stream.write(buf);
+        this.update();
     }
     /**
      * Close connection
      */
     close() {
-        this._private.stream.end();
+        let stream = this._private.stream;
+        stream.end();
+        let destroyer = setTimeout(() => stream.destroy(), 2000);
+        stream.once('end', () => clearTimeout(destroyer));
     }
     /**
      * Peer ID
@@ -84,6 +90,16 @@ class Connection extends EventEmitter {
      */
     get remoteId() {
         return this._private.remoteId.toString('base64');
+    }
+    get endpoint() {
+        return this._private.endpoint;
+    }
+    update() {
+        this._private.lastupdate = new Date();
+        if (this._private.timeoutHandler) {
+            clearTimeout(this._private.timeoutHandler);
+        }
+        this._private.timeoutHandler = setTimeout(() => this.close(), env.connTimeout * 1000);
     }
     /**
      * handshake completes and ready to send/recv data
