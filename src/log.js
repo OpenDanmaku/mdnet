@@ -40,7 +40,7 @@ module.exports = {
      * @param {string} tag
      * @param {...*} information
      */
-    nofity:     log.bind(null, 2),
+    notify:     log.bind(null, 2),
     /**
      * @function
      * @param {string} tag

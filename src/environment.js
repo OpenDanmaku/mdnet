@@ -1,9 +1,10 @@
+let mdnet = require('./mdnet.js');
 /**
  * Environment variables
  * @module environment
  * @namespace
  */
-module.exports = {
+let env = module.exports = {
     /** @namespace */
     key: {
         /** @type {Buffer} */
@@ -14,3 +15,9 @@ module.exports = {
     connTimeout: 30,
     rpcTimeout: 30
 };
+
+mdnet.registerModule('env', [], {
+    init: function () {
+        mdnet.env = env;
+    }
+});

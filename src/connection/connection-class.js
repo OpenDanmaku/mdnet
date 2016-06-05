@@ -19,6 +19,7 @@ class Connection extends EventEmitter {
         this._private.stream = stream;
         this._private.recvBuf = new Buffer(0);
         this._private.handshaked = false;
+        this._private.refs = 1;
         this.update();
         stream.on('error', (err) => this.emit('error', err));
         stream.on('close', () => this.emit('close'));
@@ -102,12 +103,25 @@ class Connection extends EventEmitter {
     get endpoint() {
         return this._private.endpoint;
     }
+    ref() {
+        this._private.refs++;
+        update();
+    }
+    deref() {
+        if (this._private.refs === 0) throw new Error('no refs to decrease');
+        this._private.refs--;
+        update();
+    }
     update() {
         this._private.lastupdate = new Date();
         if (this._private.timeoutHandler) {
             clearTimeout(this._private.timeoutHandler);
         }
-        this._private.timeoutHandler = setTimeout(() => this.close(), env.connTimeout * 1000);
+        if (this._private.refs === 0) {
+            this._private.timeoutHandler = setTimeout(() => this.close(), env.connTimeout * 1000);
+        } else {
+            this._private.timeoutHandler = null;
+        }
     }
     /**
      * handshake completes and ready to send/recv data

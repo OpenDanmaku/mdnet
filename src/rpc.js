@@ -1,14 +1,11 @@
-const co = require('co');
-const connection = require('./connection.js');
-const Message = require('./message.js');
-const env = require('./environment.js');
-
 const GeneratorFunction = (function* () {}).constructor;
-/*
-const RPCHandler = {
-    apply: RPC.apply.bind(RPC)
-}
-*/
+const co = require('co');
+
+const mdnet = require('./mdnet.js');
+let connection;
+let Message;
+let env;
+
 const RPCProxy = RPC;
 
 let rpcid = 0;
@@ -67,11 +64,6 @@ const RPCMethods = {
         resolve(message.result);
     }
 }
-connection.subscribe('rpc', function (message, nodeId) {
-    let action = message.action;
-    if (action !== 'call' && action !== 'return' && action !== 'throw') return;
-    RPCMethods[action](message, nodeId);
-});
 
 function RPC(endpoint) {
     return new Proxy({}, {
@@ -81,4 +73,19 @@ function RPC(endpoint) {
     });
 }
 
+mdnet.registerModule('RPC', ['env', 'connection'], {
+    init: function () {
+        env = mdnet.env;
+        connection = mdnet.connection;
+        Message = connection.Message;
+
+        connection.subscribe('rpc', function (message, nodeId) {
+            let action = message.action;
+            if (action !== 'call' && action !== 'return' && action !== 'throw') return;
+            RPCMethods[action](message, nodeId);
+        });
+
+        mdnet.RPC = RPCProxy;
+    }
+});
 module.exports = RPCProxy;

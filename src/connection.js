@@ -1,3 +1,4 @@
+const mdnet = require('./mdnet.js');
 const internal = require('./connection/connection-internal.js');
 const Connection = require('./connection/connection-class.js');
 const co = require('co');
@@ -46,9 +47,16 @@ internal.setDataListener(function (buf, conn) {
     messageEventCenter.emit(message.type, message, conn.remoteId, conn.endpoint);
 });
 
-module.exports = {
+let connection = module.exports = {
     Connection,
     send,
     listen,
-    subscribe
+    subscribe,
+    Message
 };
+
+mdnet.registerModule('connection', ['env'], {
+    init: function () {
+        mdnet.connection = connection;
+    }
+});

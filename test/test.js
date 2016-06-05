@@ -1,12 +1,19 @@
 const should = require('chai').should();
 require('chai').use(require('chai-as-promised'));
-const internal = require('../src/connection/connection-internal.js');
-const connection = require('../src/connection.js');
-const Message = require('../src/message.js');
-const RPC = require('../src/rpc.js');
-
 process.on('uncaughtException', e => console.error(e.stack));
 process.on('unhandledRejection', e => console.error(e.stack));
+
+const mdnet = require('../src/mdnet.js');
+require('../src/environment.js');
+require('../src/connection.js');
+require('../src/rpc.js');
+mdnet.init();
+
+const internal = require('../src/connection/connection-internal.js');
+const connection = mdnet.connection;
+const Message = connection.Message;
+const RPC = mdnet.RPC;
+
 let listening = false;
 if (!listening) {
     connection.listen('tcp:[::]:2333');
